@@ -4,9 +4,6 @@ import { Platform, View, StatusBar, useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { ThemeProvider } from 'styled-components';
 
-//import theme from '../src/globals/styles/theme';
-
-//import themes from '../src/globals/styles/darkLight';
 import AppProvider from './hooks';
 import Routes from './routes';
 

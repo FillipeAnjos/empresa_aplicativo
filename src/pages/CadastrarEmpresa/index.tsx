@@ -21,7 +21,7 @@ interface NavigationPropsI {
     goBack: () => void;
 };
 
-function Home() {
+function CadastrarEmpresa() {
 
     const [dirs, setDirs] = useState(RNFetchBlob.fs.dirs);
 
@@ -30,8 +30,6 @@ function Home() {
 
     const { navigate } = useNavigation<NavigationPropsI>();
     
-    
-
     useEffect( () => {
         
     }, []);
@@ -41,7 +39,7 @@ function Home() {
 
             <Container>
 
-                <Text>Homeeeee - Usuário Logadooooooooo</Text>
+                <Text onPress={ () => navigate("Login") }>Castrar empresaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
 
             </Container>
 
@@ -51,4 +49,4 @@ function Home() {
     
 }
 
-export default Home;
+export default CadastrarEmpresa;

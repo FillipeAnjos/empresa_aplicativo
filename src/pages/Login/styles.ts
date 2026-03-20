@@ -31,6 +31,7 @@ export const TextInputLogin = styled.TextInput`
   padding-left: 10px;
   margin-bottom: 10px;
   color: gray;
+  border: 0.5px;
 `;
 
 export const TextInputSenha = styled.TextInput`
@@ -39,6 +40,7 @@ export const TextInputSenha = styled.TextInput`
   padding-left: 10px;
   margin-bottom: 10px;
   color: gray;
+  border: 0.5px;
 `;
 
 export const ButtonLogar = styled.TouchableOpacity`
@@ -75,19 +77,19 @@ export const TextRecuperarSenha = styled.Text`
 `;
 
 export const ButtonCadastro = styled.TouchableOpacity`
-  background-color: gray;
-  border-radius: 50px;
+  background-color: #6d4598;
+  border-radius: 6px;
   align-self: center;
-  padding-top: 10px;
-  padding-left: 30px;
-  padding-right: 30px;
-  padding-bottom: 10px;
-  margin-top: 10px;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  padding-left: 40px;
+  padding-right: 40px;
+  margin-top: 20px;
 `;
 
 export const TextRealizarCadastro = styled.Text`
   color: #FFF;
   align-self: center;
-  font-size: 13px;
+  font-size: 12px;
 `;
 
