@@ -4,8 +4,9 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from "../../hooks/auth";
 import NetInfo from '@react-native-community/netinfo';
 import UsuarioRepository from "../../repositories/UsuarioRepository";
-import { Container, TextInfo, Form, TextInputLogin, TextInputSenha, ButtonLogar, TextEntrar, TextLogin, TextSenha, TextRecuperarSenha, ButtonCadastro, TextRealizarCadastro } from './styles';
+import { TextInputLogin, TextInputSenha, TextLogin, TextSenha } from './styles';
 import { Loading } from "../../components/Loading";
+import ButtonComponent from "../../components/ButtonComponent";
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -21,6 +22,7 @@ function Login() {
 
     const [login, setLogin] = useState('');
     const [senha, setSenha] = useState('');
+    const [loading, setLoading] = useState(false);
     const { signIn } = useAuth();
     
     const [cadastrarEmpresaUsuario, setCadastrarEmpresaUsuario] = useState(false);
@@ -46,7 +48,7 @@ function Login() {
                     setLimiteDispositivos(true);
 
                     var mensagemFixa = 'Sua conta é estritamente para uso pessoal e não pode ser usada em mais de dois dispositivos ao mesmo tempo. Acesse https://primeirossaberes.intersaberes.com/leitor/dispositivo para gerenciar seus dispositivos conectados.';
-                    var urlFixa = `https://primeirossaberes.intersaberes.com/leitor/dispositivo`;
+                    var urlFixa = ``;
 
                     setLimiteDispositivosMensagem(mensagemFixa); //setLimiteDispositivosMensagem(res.msg);
                     setLimiteDispositivosUrl(urlFixa); //setLimiteDispositivosUrl(res.url_dispositivo);
@@ -68,11 +70,30 @@ function Login() {
 
     return (
         <>
-            { cadastrarEmpresaUsuario ? renderizarCadastrar() : renderizarLogar() }            
+            { 
+                loading 
+                    ? <Loading /> 
+                    : cadastrarEmpresaUsuario 
+                        ? renderizarCadastrar() 
+                        : renderizarLogar() 
+            }            
         </>
     )
 
     function trocar(){
+
+        setLoading(true);
+
+        setTimeout(() => {
+
+            cadastrarEmpresaUsuario 
+                ? setCadastrarEmpresaUsuario(false) 
+                : setCadastrarEmpresaUsuario(true); 
+
+            setLoading(false);
+
+        }, 990);
+        
         cadastrarEmpresaUsuario 
             ? setCadastrarEmpresaUsuario(false) 
             : setCadastrarEmpresaUsuario(true); 
@@ -111,26 +132,34 @@ function Login() {
                         secureTextEntry={true}
                     />
 
-                    <ButtonLogar onPress={logar}>
-                        <TextEntrar>Logar</TextEntrar>
-                    </ButtonLogar>
+                    <ButtonComponent
+                        title="Logar" 
+                        onPress={logar} 
+                        color="#6d4598"
+                        radius="8px" 
+                        paddingVertical="10px"
+                        paddingHorizontal="20px"
+                        marginTop="10px"
+                        marginBottom="10px"
+                        fontSize="14px"
+                        colorText="#fff"
+                    />
 
-
-
-                    <ButtonCadastro onPress={ trocar }>
-                        <TextRealizarCadastro>Realizar Cadastro</TextRealizarCadastro>
-                    </ButtonCadastro>
-                    
-                    {/*<TextRecuperarSenha 
-                        onPress={ () => Linking.openURL("") }
-                    > 
-                        Recuperar Senha?
-                    </TextRecuperarSenha>*/}
+                    <ButtonComponent
+                        title="Realizar Cadastro" 
+                        onPress={trocar} 
+                        color="#6d4598"
+                        radius="6px" 
+                        paddingVertical="4px"
+                        paddingHorizontal="40px"
+                        marginTop="4px"
+                        marginBottom="40px"
+                        fontSize="12px"
+                        colorText="#fff"
+                    />
                 
                 </View>
 
-                
-            
             </View>
         </>
     }
