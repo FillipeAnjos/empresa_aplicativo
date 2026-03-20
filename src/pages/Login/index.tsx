@@ -4,9 +4,12 @@ import { useNavigation } from '@react-navigation/native';
 import { useAuth } from "../../hooks/auth";
 import NetInfo from '@react-native-community/netinfo';
 import UsuarioRepository from "../../repositories/UsuarioRepository";
-import { TextInputLogin, TextInputSenha, TextLogin, TextSenha } from './styles';
 import { Loading } from "../../components/Loading";
 import ButtonComponent from "../../components/ButtonComponent";
+
+import TextInputComponent from '../../components/TextInputComponent';
+
+import { ViewContainer, ViewContainerSon, TextLogin, TextSenha, TextInitial, TextSecundary, TextEmpty } from './styles';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
@@ -37,6 +40,9 @@ function Login() {
             Alert.alert('Senha', 'Favor informar a senha.');
             return false;
         }
+
+        console.log('Email: ' + login);
+        console.log('Senha: ' + senha);
     
         // -------------------------------------------------
     
@@ -101,35 +107,30 @@ function Login() {
 
     function renderizarLogar(){
         return <>
-            <Text style={{ marginLeft: 20, marginTop: 20,  color: '#000', fontSize: 18 }}>Projeto Empresa</Text>
+            <TextInitial>Projeto Empresa</TextInitial>
     
-            <View 
-                style={{ 
-                    position: "absolute",
-                    paddingHorizontal: 60,
-                    paddingVertical: 186,
-                    alignSelf: "center",
-                    top: '12%'
-                }}
-            >
+            <ViewContainer>
 
-                <View style={{ width: 300 }} >
+                <ViewContainerSon>
 
                     <TextLogin>E-mail</TextLogin>
-                    <TextInputLogin 
-                        placeholder='fulano@email.com'
-                        placeholderTextColor="#C0C0C0" 
+                    <TextInputComponent
+                        label="E-mail"
+                        placeholder="Digite seu e-mail"
                         value={login}
                         onChangeText={setLogin}
+                        keyboardType="email-address" 
+                        placeholderTextColor="#C0C0C0" 
                     />
 
                     <TextSenha>Senha</TextSenha>
-                    <TextInputSenha
-                        placeholder='Digite sua senha' 
-                        placeholderTextColor="#C0C0C0" 
+                    <TextInputComponent
+                        label="Senha"
+                        placeholder="Digite sua senha"
                         value={senha}
                         onChangeText={setSenha}
-                        secureTextEntry={true}
+                        placeholderTextColor="#C0C0C0" 
+                        secureTextEntry 
                     />
 
                     <ButtonComponent
@@ -158,39 +159,38 @@ function Login() {
                         colorText="#fff"
                     />
                 
-                </View>
+                </ViewContainerSon>
 
-            </View>
+            </ViewContainer>
         </>
     }
 
     function renderizarCadastrar(){
         return <>
-            <Text style={{ marginLeft: 20, marginTop: 20,  color: '#000', fontSize: 18 }} onPress={ trocar }> {`<-- Voltar`} </Text>
-            <Text style={{ marginLeft: 20, marginTop: 20,  color: '#000', fontSize: 18 }}>Qual deseja cadastrar?</Text>
-    
-            <View 
-                style={{ 
-                    position: "absolute",
-                    paddingHorizontal: 60,
-                    paddingVertical: 186,
-                    alignSelf: "center",
-                    top: '12%'
-                }}
-            >
 
-                <View style={{ width: 300 }} >
+            <ButtonComponent
+                title="<- Voltar" 
+                onPress={trocar} 
+                color="#000"
+                radius="6px" 
+                paddingVertical="4px"
+                paddingHorizontal="40px"
+                marginTop="20px"
+                marginBottom="0px"
+                fontSize="12px"
+                colorText="#fff"
+            />
 
-                    <Text onPress={ () => navigate("CadastrarEmpresa") }>Cadatrar Empresa</Text>
+            <TextSecundary>O que deseja cadastrar?</TextSecundary>
 
-                    <Text> </Text>
-                    <Text> </Text>
+            <ViewContainer>
+                <ViewContainerSon>
+                    <TextEmpty onPress={ () => navigate("CadastrarEmpresa") }>Cadatrar Empresa</TextEmpty>
+                    <TextEmpty /> 
+                    <TextEmpty onPress={ () => navigate("CadastrarUsuario") }>Cadatrar Usuario</TextEmpty>
+                </ViewContainerSon>
+            </ViewContainer>
 
-                    <Text onPress={ () => navigate("CadastrarUsuario") }>Cadatrar Usuario</Text>
-                
-                </View>
-
-            </View>
         </>
     }
 
