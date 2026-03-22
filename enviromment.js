@@ -1,4 +1,4 @@
 export default {
   nome: 'Projeto Empresa',
-  api: 'http://localhost:3001',
+  api: 'http://192.168.1.8:3001',
 };

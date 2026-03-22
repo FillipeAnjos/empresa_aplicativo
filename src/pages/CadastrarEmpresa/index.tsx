@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions } from "react-native";
+import { Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
-import { useLogged } from "../../hooks/logged";
-import { useAuth } from "../../hooks/auth";
-
 import TextInputComponent from '../../components/TextInputComponent';
 import ButtonComponent from "../../components/ButtonComponent";
 
-import {  } from "../../services/ApiService";
+import { cadastrarFirma as cadastrarFirmaService } from "../../services/ApiService";
 
-import { 
-    Container, 
-    TextFirma
-} from './styles';
+import { Container, TextFirma } from './styles';
+import { Loading } from "../../components/Loading";
 
 interface NavigationPropsI {
     navigate: (screen: string, params?: any) => void;
@@ -21,62 +16,82 @@ interface NavigationPropsI {
 
 function CadastrarEmpresa() {
 
-    const { } = useLogged();
-    const { signOut } = useAuth();
-
     const { navigate } = useNavigation<NavigationPropsI>();
 
-    const [firma, setFirma] = useState();
-    
-    useEffect( () => {
+    const [loading, setLoading] = useState<boolean>(false);
+    const [firma, setFirma] = useState<string>('');
         
-    }, []);
-    
     return (
         <>
             <Container>
 
-                <ButtonComponent
-                    title="<- Voltar" 
-                    onPress={ () => navigate("Login") } 
-                    color="#000"
-                    radius="6px" 
-                    paddingVertical="4px"
-                    paddingHorizontal="40px"
-                    marginTop="20px"
-                    marginBottom="20px"
-                    fontSize="12px"
-                    colorText="#fff"
-                />
+                {
+                    loading
+                        ? <Loading />
+                        : <>
 
-                <TextFirma>Qual o nome da Empresa?</TextFirma>
-                <TextInputComponent
-                    label="Qual o nome da Empresa?"
-                    placeholder=""
-                    value={firma}
-                    onChangeText={setFirma}
-                    keyboardType="email-address" 
-                    placeholderTextColor="#C0C0C0" 
-                />
+                            <ButtonComponent
+                                title="<- Voltar" 
+                                onPress={ () => navigate("Login") } 
+                                color="#000"
+                                radius="6px" 
+                                paddingVertical="4px"
+                                paddingHorizontal="40px"
+                                marginTop="20px"
+                                marginBottom="20px"
+                                fontSize="12px"
+                                colorText="#fff"
+                            />
 
-                <ButtonComponent
-                        title="Cadastrar Empresa" 
-                        onPress={ () => navigate("Login") }
-                        color="#6d4598"
-                        radius="6px" 
-                        paddingVertical="4px"
-                        paddingHorizontal="40px"
-                        marginTop="4px"
-                        marginBottom="40px"
-                        fontSize="12px"
-                        colorText="#fff"
-                    />
+                            <TextFirma>Qual o nome da Empresa?</TextFirma>
+                            <TextInputComponent
+                                label="Qual o nome da Empresa?"
+                                placeholder=""
+                                value={firma}
+                                onChangeText={setFirma}
+                                keyboardType="email-address" 
+                                placeholderTextColor="#C0C0C0" 
+                            />
+
+                            <ButtonComponent
+                                title="Cadastrar Empresa" 
+                                onPress={cadastrarFirma}
+                                color="#6d4598"
+                                radius="6px" 
+                                paddingVertical="4px"
+                                paddingHorizontal="40px"
+                                marginTop="4px"
+                                marginBottom="40px"
+                                fontSize="12px"
+                                colorText="#fff"
+                            />
+                        
+                        </>
+                }
 
             </Container>
         </>
     )
 
-    
+    async function cadastrarFirma() {
+
+        if(firma == ''){
+            Alert.alert('Importante', 'Favor informar a Empresa.');
+            return false;
+        }
+
+        setLoading(true);
+        
+        var fir = await cadastrarFirmaService(firma);
+
+        setTimeout(() => {
+            Alert.alert(!fir.firma.error ? 'Sucesso' : 'Importante', fir.firma.msg); 
+            setFirma('');
+            setLoading(false);
+        }, 990);
+        
+    }
+
 }
 
 export default CadastrarEmpresa;
