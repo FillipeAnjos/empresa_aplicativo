@@ -18,8 +18,6 @@ async function cadastrarFirma(nome: string) {
         return data;
     }catch(err) {
         console.log("Erro no cadastrarFirma - ApiService");
-        console.log("Erro no cadastrarFirma - ApiService");
-        console.log("Erro no cadastrarFirma - ApiService");
         return false;
     }
 

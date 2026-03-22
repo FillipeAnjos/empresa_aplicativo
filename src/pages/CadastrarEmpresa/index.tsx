@@ -84,6 +84,13 @@ function CadastrarEmpresa() {
         
         var fir = await cadastrarFirmaService(firma);
 
+        if(!fir){
+            Alert.alert("Importante", "Ocorreu um erro ao cadastrar a Empresa. Contate o administrador do sistema.");
+            setFirma('');
+            setLoading(false);
+            return false;
+        }
+
         setTimeout(() => {
             Alert.alert(!fir.firma.error ? 'Sucesso' : 'Importante', fir.firma.msg); 
             setFirma('');
