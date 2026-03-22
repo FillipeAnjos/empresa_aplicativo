@@ -1,20 +1,18 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, View, Text, Image, TouchableOpacity, ActivityIndicator, Alert, Linking } from "react-native";
+import { Dimensions } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { useLogged } from "../../hooks/logged";
-import RNFetchBlob from 'rn-fetch-blob';
 import { useAuth } from "../../hooks/auth";
 
+import TextInputComponent from '../../components/TextInputComponent';
+import ButtonComponent from "../../components/ButtonComponent";
 
-import { 
+import {  } from "../../services/ApiService";
 
-} from "../../services/ApiService";
 import { 
     Container, 
+    TextFirma
 } from './styles';
-
-const windowWidth = Dimensions.get('window').width;
-const windowHeight = Dimensions.get('window').height;
 
 interface NavigationPropsI {
     navigate: (screen: string, params?: any) => void;
@@ -23,12 +21,12 @@ interface NavigationPropsI {
 
 function CadastrarEmpresa() {
 
-    const [dirs, setDirs] = useState(RNFetchBlob.fs.dirs);
-
     const { } = useLogged();
     const { signOut } = useAuth();
 
     const { navigate } = useNavigation<NavigationPropsI>();
+
+    const [firma, setFirma] = useState();
     
     useEffect( () => {
         
@@ -36,13 +34,45 @@ function CadastrarEmpresa() {
     
     return (
         <>
-
             <Container>
 
-                <Text onPress={ () => navigate("Login") }>Castrar empresaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</Text>
+                <ButtonComponent
+                    title="<- Voltar" 
+                    onPress={ () => navigate("Login") } 
+                    color="#000"
+                    radius="6px" 
+                    paddingVertical="4px"
+                    paddingHorizontal="40px"
+                    marginTop="20px"
+                    marginBottom="20px"
+                    fontSize="12px"
+                    colorText="#fff"
+                />
+
+                <TextFirma>Qual o nome da Empresa?</TextFirma>
+                <TextInputComponent
+                    label="Qual o nome da Empresa?"
+                    placeholder=""
+                    value={firma}
+                    onChangeText={setFirma}
+                    keyboardType="email-address" 
+                    placeholderTextColor="#C0C0C0" 
+                />
+
+                <ButtonComponent
+                        title="Cadastrar Empresa" 
+                        onPress={ () => navigate("Login") }
+                        color="#6d4598"
+                        radius="6px" 
+                        paddingVertical="4px"
+                        paddingHorizontal="40px"
+                        marginTop="4px"
+                        marginBottom="40px"
+                        fontSize="12px"
+                        colorText="#fff"
+                    />
 
             </Container>
-
         </>
     )
 

@@ -3,6 +3,14 @@ import styled from 'styled-components/native';
 export const Container = styled.ScrollView`
   flex: 1;
   margin-left: 10px;
+  padding-right: 30px;
+  padding-left: 30px;
+`;
+
+export const TextFirma = styled.Text`
+  color: #696969;
+  margin-bottom: 0px;
+  font-size: 16px;
 `;
 
 
