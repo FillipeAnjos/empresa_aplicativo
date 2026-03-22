@@ -19,6 +19,12 @@ export const TextSenha = styled.Text`
   font-size: 16px;
 `;
 
+export const TextSelecioneEmpresa = styled.Text`
+  color: #696969;
+  margin-bottom: 0px;
+  font-size: 16px;
+`;
+
 export const TextConfirmarSenha = styled.Text`
   color: #696969;
   margin-bottom: 0px;
@@ -27,9 +33,17 @@ export const TextConfirmarSenha = styled.Text`
 
 export const TextInfirmativoSenhas = styled.Text`
   color: #696969;
-  margin-top: 10px;
+  margin-top: 30px;
   font-size: 12px;
   margin-bottom: 4px;
+`;
+
+export const TextNaoPossuiEmpresa = styled.Text`
+  color: #696969;
+  margin-top: 0px;
+  font-size: 16px;
+  margin-bottom: 4px;
+  text-align: center;
 `;
 
 export const TextInfirmativoSenhas2 = styled.Text`
