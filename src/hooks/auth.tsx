@@ -23,30 +23,52 @@ const AuthContext = createContext({} as AuthContextData);
 
 function AuthProvider({children}: AuthProviderProps) {
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
 
   const [versaoAplicativo, setVersaoAplicativo] = useState<boolean>(false);
   const [loadingVersao, setLoadingVersao] = useState<boolean>(true);
 
+  useEffect(() => {
+
+    setLoading(true);
+
+    async function loadUserStorageData(): Promise<void> {  
+
+      var userLogado = await AuthService.usuarioRepository.get();
+
+      if(userLogado != null && userLogado != ''){
+        setLoggedIn(true);
+        setLoading(false);
+      }
+
+      setLoading(false);
+    }
+    
+    loadUserStorageData();
+
+  }, [loggedIn]);
+
   async function signOut() {
     
-    /*await AuthService.logout();
+    await AuthService.logout();
     
     setLoggedIn(false);
 
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-    }, 900);*/
+    }, 900);
 
   }
 
   async function signIn({login, senha}: SignInCredentials) {
 
-      /*var ok: any = await AuthService.loginPrimeiroSaberes(login, senha, DeviceInfo.getModel(), DeviceInfo.getUniqueId());
+      var ok: any = await AuthService.loginUsuario(login, senha);
 
-      if(!ok.sucesso && ok.limite_dispositivos){
-        return ok;
+      if(ok.error){
+        setLoggedIn(false);
+        setLoading(false);
+        throw new Error();
       }
 
       if(ok){
@@ -59,8 +81,9 @@ function AuthProvider({children}: AuthProviderProps) {
 
       }else{
         setLoggedIn(false);
+        setLoading(false);
         throw new Error();
-      }*/
+      }
 
   }  
 

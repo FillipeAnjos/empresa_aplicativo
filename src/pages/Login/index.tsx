@@ -40,33 +40,12 @@ function Login() {
             Alert.alert('Senha', 'Favor informar a senha.');
             return false;
         }
-
-        console.log('Email: ' + login);
-        console.log('Senha: ' + senha);
     
-        // -------------------------------------------------
-    
-        /*try{
-            var res: any = await signIn({ login: login, password: senha }); 
-
-            if(res){
-                if(res.limite_dispositivos){
-                    setLimiteDispositivos(true);
-
-                    var mensagemFixa = 'Sua conta é estritamente para uso pessoal e não pode ser usada em mais de dois dispositivos ao mesmo tempo. Acesse https://primeirossaberes.intersaberes.com/leitor/dispositivo para gerenciar seus dispositivos conectados.';
-                    var urlFixa = ``;
-
-                    setLimiteDispositivosMensagem(mensagemFixa); //setLimiteDispositivosMensagem(res.msg);
-                    setLimiteDispositivosUrl(urlFixa); //setLimiteDispositivosUrl(res.url_dispositivo);
-
-                    setLimiteDispositivosLoading(false);
-                    return;
-                }
-            }
-            
+        try{
+            await signIn({ login: login, senha: senha });             
         } catch (e) {
-            Alert.alert('Credenciais', 'Usuário ou senha incorretos. Por favor, verifique as informações e tente novamente');
-        }*/
+            Alert.alert('Credenciais', 'Usuário ou senha incorretos. Por favor, verifique as informações e tente novamente.');
+        }
 
     }
 

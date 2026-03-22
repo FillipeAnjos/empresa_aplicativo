@@ -25,13 +25,8 @@ function Home() {
 
     const [dirs, setDirs] = useState(RNFetchBlob.fs.dirs);
 
-    const { } = useLogged();
-    const { signOut } = useAuth();
-
     const { navigate } = useNavigation<NavigationPropsI>();
     
-    
-
     useEffect( () => {
         
     }, []);

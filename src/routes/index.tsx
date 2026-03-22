@@ -8,14 +8,11 @@ function Routes(): React.JSX.Element {
  
   const { loading, loggedIn } = useAuth();
 
-  /*if (loading) {
+  if (loading) {
     return (<Loading />)
-  }*/
+  }
 
-  var testeRota = false;
-
-  //return loggedIn 
-  return testeRota
+  return loggedIn 
           ? <AppRoutes /> 
           : <AuthRoutes />;
 
