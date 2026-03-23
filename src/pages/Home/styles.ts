@@ -1,68 +1,51 @@
 import styled from 'styled-components/native';
 
+interface ITextProps {
+  colorText?: string;
+}
+
 export const Container = styled.ScrollView`
   flex: 1;
   margin-left: 10px;
+  padding-right: 15px;
+  padding-left: 15px;
 `;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-export const LivrosBaixadosTexto = styled.Text`
-  margin-top: 10px;
-  color: gray;
+export const TextEmpresaTitulo = styled.Text`
+  margin-top: 20px;
+  margin-bottom: 40px;
+  color: #696969;
   font-size: 18px;
-  padding-Top: 5px;
-  font-weight: bold;
 `;
 
-export const ViewNenhumaObra = styled.View`
-  height: 70px;
-  align-items: center;
-  justify-content: center;
+export const TextEmpresa = styled.Text`
+  color: #696969;
+  margin-bottom: 0px;
+  font-size: 16px;
 `;
 
-export const MinhaBibliotecaTexto = styled.Text`
-  color: gray;
-  font-size: 18px;
-  padding-Top: 5px;
-  font-weight: bold;
+export const TextDescricao = styled.Text`
+  color: #696969;
+  margin-top: 14px;
+  margin-bottom: 0px;
+  font-size: 16px;
 `;
 
-export const UltimasLeiturasTexto = styled.Text`
-  color: gray;
-  font-size: 18px;
-  padding-Top: 5px;
-  font-weight: bold;
+export const TextTipo = styled.Text`
+  color: #696969;
+  margin-bottom: 0px;
+  font-size: 16px;
 `;
+
+
+export const TextSincronizado = styled.Text`
+  color: #696969;
+  margin-top: 4px;
+  margin-bottom: 0px;
+  font-size: 16px;
+`;
+
+export const TextValorSincronizado = styled.Text<ITextProps>`
+  color: ${props => props.colorText ? props.colorText : '#FF6347' };
+`;
+

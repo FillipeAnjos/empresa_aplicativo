@@ -70,8 +70,19 @@ async function cadastrarUsuario({nome, login, senha, confirma_senha, firma_id}: 
 
 }
 
+async function buscarDadosUsuario(){
+
+        var usuarioRepository = new UsuarioRepository();
+
+        var userLogado = await usuarioRepository.get();
+
+        return userLogado;
+
+    }
+
 export {
     cadastrarFirma,
     listarFirma,
-    cadastrarUsuario
+    cadastrarUsuario,
+    buscarDadosUsuario
 };
