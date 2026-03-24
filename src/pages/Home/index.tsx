@@ -9,7 +9,8 @@ import ButtonComponent from "../../components/ButtonComponent";
 import { useAuth } from "../../hooks/auth";
 
 import { 
-    buscarDadosUsuario as buscarDadosUsuarioService
+    buscarDadosUsuario as buscarDadosUsuarioService,
+    cadastrarLancamento as cadastrarLancamentoService
 } from "../../services/ApiService";
 
 import { 
@@ -128,9 +129,7 @@ function Home() {
     async function buscarDadosUsuario(){
 
         var dados = await buscarDadosUsuarioService();
-
-        //console.log(dados.usuario.status);
-        //console.log(dados.usuario.sucesso);
+        
         setIdUsuario(dados.usuario.id);
         setNomeUsuario(dados.usuario.nome);
         setEmail(dados.usuario.login);
@@ -145,7 +144,14 @@ function Home() {
         
     }
 
-    function cadastrarLancamento(){
+    function limparCampos(){
+        setTipo('');
+        setDescricao('');
+    }
+
+    async function cadastrarLancamento(){
+
+        setLoading(true);
 
         if(
             idEmpresa == 0
@@ -154,31 +160,41 @@ function Home() {
             || descricao == ''
             || date.toLocaleString() == ''
         ){  
+            setLoading(false);
             Alert.alert("Aviso", "Todos os campos deverão ser informados!");
             return;
         }
 
         if(descricao.length < 10){
+            setLoading(false);
             Alert.alert("Aviso", "O campo DESCRIÇÃO deve ter no mínimo 10 caracteres!");
             return;
         }
 
+        var lancamento = { 
+            tipo: tipo,
+            data_hora: date.toLocaleString(),
+            descricao: descricao,
+            sincronizado: sincronizado,
+            firma_id: idEmpresa,
+            usuario_id: idUsuario
+        };
 
+        var lan = await cadastrarLancamentoService(lancamento);
 
-        console.log("-------------------------------------");
-        console.log("-------------------------------------");
+        if(!lan){
+            Alert.alert("Importante", "Ocorreu um erro ao cadastrar o laçamento. Contate o administrador do sistema.");
+            limparCampos();
+            setLoading(false);
+            return false;
+        }
 
-        console.log(idEmpresa);
-        console.log(empresa);
-        console.log(tipo);
-        console.log(descricao);
-        console.log(date.toLocaleString());
-        console.log(sincronizado);
-        
-        console.log("-------------------------------------");
-        console.log("-------------------------------------");
-        
-        console.log("Estou no cadastrarLancamento cadastrarLancamento");
+        setTimeout(() => {
+            Alert.alert("Sucesso", lan.lancamento.msg); 
+            limparCampos();
+            setLoading(false);
+        }, 990);
+
     }
 
     // --------------------------------
