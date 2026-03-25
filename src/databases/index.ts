@@ -14,7 +14,3 @@ export const database = new Database({
         FirmaModel
     ]
 });
-
-// https://www.youtube.com/watch?v=r4aAlsbF1DM&t=3560s
-
-// 57:20

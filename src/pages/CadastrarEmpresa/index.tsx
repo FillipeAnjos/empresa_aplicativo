@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList, Text, View } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import TextInputComponent from '../../components/TextInputComponent';
 import ButtonComponent from "../../components/ButtonComponent";
