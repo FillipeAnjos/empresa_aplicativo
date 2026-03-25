@@ -39,6 +39,7 @@ export const TextSecundary = styled.Text`
 `;
 
 export const TextEmpty = styled.Text`
+  color: gray;
 `;
 
 

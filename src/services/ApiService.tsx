@@ -21,11 +21,11 @@ interface ICadastrarLancamento {
     usuario_id: number;
 }
 
-async function cadastrarFirma(nome: string) {
+async function cadastrarEditarFirma(id: number | null, nome: string) {
 
-    const insert = { nome: nome };
+    const insert = { id: id, nome: nome };
     
-    let url = `/cadastrarFirma`;
+    let url = `/cadastrarEditarFirma`;
 
     try {
         let res = await Api.post(url, insert);
@@ -33,7 +33,7 @@ async function cadastrarFirma(nome: string) {
 
         return data;
     }catch(err) {
-        console.log("Erro no cadastrarFirma - ApiService");
+        console.log("Erro no cadastrarEditarFirma - ApiService");
         return false;
     }
 
@@ -115,7 +115,7 @@ async function cadastrarLancamento({tipo, data_hora, descricao, sincronizado, fi
 }
 
 export {
-    cadastrarFirma,
+    cadastrarEditarFirma,
     listarFirma,
     cadastrarUsuario,
     buscarDadosUsuario,
