@@ -3,6 +3,8 @@ import SQLiteAdapter from '@nozbe/watermelondb/adapters/sqlite';
 
 import { schemas } from './schemas';
 import { FirmaModel } from './models/firmaModel';
+import { UsuarioModel } from './models/usuarioModel';
+import { LancamentoModel } from './models/lancamentoModel';
 
 const adapter = new SQLiteAdapter({
     schema: schemas
@@ -11,6 +13,8 @@ const adapter = new SQLiteAdapter({
 export const database = new Database({
     adapter,
     modelClasses: [
-        FirmaModel
+        FirmaModel,
+        UsuarioModel,
+        LancamentoModel
     ]
 });

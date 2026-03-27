@@ -5,6 +5,7 @@ import ApiSemUrlPadrao from "./ApiSemUrlPadrao";
 import ApiRepository from "../repositories/ApiRepository";
 
 interface ICadastrarUsuario {
+    id: number | null;
     nome: string;
     login: string;
     senha: string;
@@ -13,6 +14,7 @@ interface ICadastrarUsuario {
 }
 
 interface ICadastrarLancamento {
+    id: number | null;
     tipo: string; 
     data_hora: string; 
     descricao: string; 
@@ -55,9 +57,10 @@ async function listarFirma() {
 
 }
 
-async function cadastrarUsuario({nome, login, senha, confirma_senha, firma_id}: ICadastrarUsuario) {
+async function cadastrarEditarUsuario({id, nome, login, senha, confirma_senha, firma_id}: ICadastrarUsuario) {
 
     const insert = { 
+        id: id,
         nome: nome,
         login: login,
         senha: senha,
@@ -65,7 +68,7 @@ async function cadastrarUsuario({nome, login, senha, confirma_senha, firma_id}: 
         firma_id: firma_id,
     };
     
-    let url = `/cadastrarUsuario`;
+    let url = `/cadastrarEditarUsuario`;
 
     try {
         let res = await Api.post(url, insert);
@@ -89,9 +92,10 @@ async function buscarDadosUsuario(){
 
 }
 
-async function cadastrarLancamento({tipo, data_hora, descricao, sincronizado, firma_id, usuario_id}: ICadastrarLancamento) {
+async function cadastrarEditarLancamento({id, tipo, data_hora, descricao, sincronizado, firma_id, usuario_id}: ICadastrarLancamento) {
 
     const insert = { 
+        id: id,
         tipo: tipo,
         data_hora: data_hora,
         descricao: descricao,
@@ -108,7 +112,24 @@ async function cadastrarLancamento({tipo, data_hora, descricao, sincronizado, fi
 
         return data;
     }catch(err) {
-        console.log("Erro no cadastrarLancamento - ApiService");
+        console.log("Erro no cadastrarEditarLancamento - ApiService");
+        return false;
+    }
+
+}
+
+async function listarLancamento() {
+    
+    let url = `/buscarLancamento`;
+
+    try {
+
+        let res = await Api.get(url);
+        var data = res.data;
+
+        return data;
+    }catch(err) {
+        console.log("Erro no listarLancamento - ApiService");
         return false;
     }
 
@@ -117,7 +138,8 @@ async function cadastrarLancamento({tipo, data_hora, descricao, sincronizado, fi
 export {
     cadastrarEditarFirma,
     listarFirma,
-    cadastrarUsuario,
+    cadastrarEditarUsuario,
     buscarDadosUsuario,
-    cadastrarLancamento
+    cadastrarEditarLancamento,
+    listarLancamento
 };

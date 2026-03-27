@@ -3,14 +3,17 @@ import { useNavigation } from '@react-navigation/native';
 import { SelectList } from "react-native-dropdown-select-list";
 import TextInputComponent from "../../components/TextInputComponent";
 import { Loading } from "../../components/Loading";
-import { View, Button, Platform, Text, Alert } from 'react-native';
+import { View, Platform, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonComponent from "../../components/ButtonComponent";
-import { useAuth } from "../../hooks/auth";
+import { useNetInfo } from "@react-native-community/netinfo";
+import { database } from '../../databases';
+import { LancamentoModel } from '../../databases/models/lancamentoModel';
 
 import { 
     buscarDadosUsuario as buscarDadosUsuarioService,
-    cadastrarLancamento as cadastrarLancamentoService
+    cadastrarEditarLancamento as cadastrarEditarLancamentoService,
+    listarLancamento as listarLancamentoService
 } from "../../services/ApiService";
 
 import { 
@@ -20,8 +23,15 @@ import {
     TextDescricao,
     TextTipo,
     TextSincronizado,
-    TextValorSincronizado
+    TextValorSincronizado,
+    TextListaLancamento,
+    TextListaLancamentos,
+    ViewListaLancamentos,
+    TextExibirEsconder,
+    TextLinhaExibirEsconder,
+    TouchableOpacityListaLancamentos
 } from './styles';
+import { useLogged } from "../../hooks/logged";
 
 interface NavigationPropsI {
     navigate: (screen: string, params?: any) => void;
@@ -30,22 +40,21 @@ interface NavigationPropsI {
 
 function Home() {
 
+    const netInfo = useNetInfo();
     const { navigate } = useNavigation<NavigationPropsI>();
+    const { buscarLancamentoLocalLogged } = useLogged();
     
     const [loading, setLoading] = useState<Boolean>(false);
-
     const [idUsuario, setIdUsuario] = useState<number>(0);
     const [nomeUsuario, setNomeUsuario] = useState<string>('');
-    
     const [email, setEmail] = useState<string>('');
-
     const [idEmpresa, setIdEmpresa] = useState<number>(0);
     const [empresa, setUEmpresa] = useState<string>('');
-
     const [tipo, setTipo] = useState<string>('');
     const [descricao, setDescricao] = useState<string>('');
-
     const [sincronizado, setSincronizado] = useState<boolean>(false);
+    const [lancamentos, setLancamentos] = useState<LancamentoModel[]>([]);
+    const [exibirCampos, setExibirCampos] = useState<boolean>(true);
 
     const dadosTipo = [
       {key:'1', value:'COMPRA', disabled: false},
@@ -60,7 +69,21 @@ function Home() {
     useEffect( () => {
         setLoading(true);
         buscarDadosUsuario();
+        setTimeout(() => {
+            const fetchBuscarLancamentoLocalLogged = async () => {
+                var kkk: any = await buscarLancamentoLocalLogged(); // buscarLancamentoLocal();
+                setLancamentos(kkk);
+            };
+            fetchBuscarLancamentoLocalLogged();
+            setLoading(false);
+        }, 990);
     }, []);
+
+    useEffect( () => {
+        setTimeout(() => {
+
+        }, 990);
+    }, [sincronizado]);
     
     return (
         <>
@@ -72,51 +95,53 @@ function Home() {
                         : <>
                             <TextEmpresaTitulo>Lançamentos</TextEmpresaTitulo>
 
-                            <TextEmpresa>Sua Empresa</TextEmpresa>
-                            <TextInputComponent
-                                label="Sua Empresa"
-                                placeholder=""
-                                value={empresa}
-                                onChangeText={setUEmpresa} 
-                                placeholderTextColor="#C0C0C0" 
-                                editable={false}
-                            />
-
-                            <TextTipo>Tipo</TextTipo>
-                            <SelectList 
-                                setSelected={(val: any) => setTipo(val)} 
-                                data={dadosTipo} 
-                                save="value"
-                            />
-
-                            <TextDescricao>Descrição</TextDescricao>
-                            <TextInputComponent
-                                label="Descrição"
-                                placeholder="Informe sua descrição"
-                                value={descricao}
-                                onChangeText={setDescricao} 
-                                placeholderTextColor="#C0C0C0" 
-                            />
-
-                            { camposDataHora() }
-
-                            <TextSincronizado>
-                                Sincronizado: <TextValorSincronizado colorText={sincronizado ? '#32CD32' : '#FF6347'}>
-                                                {sincronizado ? 'Sim' : 'Não'}
-                                               </TextValorSincronizado>
-                            </TextSincronizado>
-
                             <ButtonComponent
-                                title="Cadastrar Lançamento" 
-                                onPress={ cadastrarLancamento }
-                                color="#6d4598"
+                                title="Sincronizar" 
+                                onPress={ () => sincronizar() } 
+                                color="gray"
                                 radius="6px" 
-                                paddingVertical="6px"
+                                paddingVertical="4px"
                                 paddingHorizontal="40px"
-                                marginTop="30px"
+                                marginTop="0px"
                                 marginBottom="10px"
                                 fontSize="14px"
                                 colorText="#fff"
+                            />
+
+                            {
+                                exibirCampos
+                                    ? <TextExibirEsconder onPress={ () => exibirEsconderCampos(false) }>Esconder Campos</TextExibirEsconder>
+                                    : <TextExibirEsconder onPress={ () => exibirEsconderCampos(true) }>Exibir Campos</TextExibirEsconder>
+                            }
+                            
+                            <TextLinhaExibirEsconder />
+
+                            {
+                                exibirCampos
+                                    ? <>
+                                        { camposCadastrar() }
+                                    </>
+                                : null
+                            }
+
+                            <TextListaLancamento>Listas das Lançamentos Cadastrados</TextListaLancamento>
+                                                        
+                            <FlatList
+                                data={lancamentos}
+                                style={{ marginLeft: -10 }}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacityListaLancamentos onPress={ () => console.log("Falta fazer o Editarrrrrr") }>
+                                        <Text style={{ color: '#000' }}>{item.descricao.substring(0, 30)}</Text>
+                                        <Text style={{ color: '#000' }}>
+                                            {
+                                                item.sincronizado 
+                                                    ? <Text>Sync: <Text style={{ color: '#3CB371' }}>Sim</Text></Text>
+                                                    : <Text>Sync: <Text style={{ color: '#c71919' }}>Não</Text></Text>
+                                            }
+                                        </Text>
+                                    </TouchableOpacityListaLancamentos>
+                                )}
+                                keyExtractor={item => item.id}
                             />
 
                         </>
@@ -126,31 +151,16 @@ function Home() {
         </>
     )
 
-    async function buscarDadosUsuario(){
-
-        var dados = await buscarDadosUsuarioService();
-        
-        setIdUsuario(dados.usuario.id);
-        setNomeUsuario(dados.usuario.nome);
-        setEmail(dados.usuario.login);
-        setIdEmpresa(dados.usuario.idfirma);
-        setUEmpresa(dados.usuario.nomefirma);
-        
-        setSincronizado(false);
-
-        setTimeout(() => {
+    function exibirEsconderCampos(condicao: boolean){
+        setLoading(true);
+        setExibirCampos(condicao);
+        setTimeout(async () => {
             setLoading(false);
-        }, 990);
+        }, 800);
+    }
+
+    async function cadastrarLancamentoLocalBanco() {
         
-    }
-
-    function limparCampos(){
-        setTipo('');
-        setDescricao('');
-    }
-
-    async function cadastrarLancamento(){
-
         setLoading(true);
 
         if(
@@ -172,29 +182,126 @@ function Home() {
         }
 
         var lancamento = { 
+            id: null,
             tipo: tipo,
             data_hora: date.toLocaleString(),
             descricao: descricao,
-            sincronizado: sincronizado,
+            sincronizado: true,
             firma_id: idEmpresa,
             usuario_id: idUsuario
         };
+        
+        var res = await cadastrarEditarLancamentoService(lancamento); 
 
-        var lan = await cadastrarLancamentoService(lancamento);
+        var idbanco = !res ? 0 : res.lancamento.idCadastrado;
 
-        if(!lan){
-            Alert.alert("Importante", "Ocorreu um erro ao cadastrar o laçamento. Contate o administrador do sistema.");
-            limparCampos();
-            setLoading(false);
-            return false;
-        }
+        await database.write(async () => {
+            await database.get<LancamentoModel>('lancamento').create(data => {
+                data.idbanco = idbanco,
+                data.tipo = tipo,
+                data.data_hora = date.toLocaleString(),
+                data.descricao = descricao,
+                data.sincronizado = idbanco == 0 ? false : true,
+                data.firma_id = idEmpresa,
+                data.usuario_id = idUsuario
+            })
+        });
 
-        setTimeout(() => {
-            Alert.alert("Sucesso", lan.lancamento.msg); 
-            limparCampos();
-            setLoading(false);
-        }, 990);
+        setLoading(false);
+        Alert.alert("Importante", "Lançamento criado com sucesso!");
+        limparCampos();
+        await buscarLancamentoLocal();
 
+    }
+
+    async function buscarLancamentoLocal() {
+
+        console.log("caiu aquiiiiiiiiiiiiiiiiiiiii");
+        
+        const lancamentosLocal = database.get<LancamentoModel>('lancamento');
+        const res = await lancamentosLocal.query().fetch();
+
+        var resposta: LancamentoModel[] = [];
+    
+        new Promise(() => {
+            res.forEach(async (l: any) => {
+                l._raw.usuario_id == idUsuario ? resposta.push(l) : false;
+            });
+        });
+
+        console.log(resposta);
+
+        setLancamentos(resposta);
+    }
+
+    async function buscarDadosUsuario(){
+
+        var dados = await buscarDadosUsuarioService();
+        
+        setIdUsuario(dados.usuario.id);
+        setNomeUsuario(dados.usuario.nome);
+        setEmail(dados.usuario.login);
+        setIdEmpresa(dados.usuario.idfirma);
+        setUEmpresa(dados.usuario.nomefirma);
+        setSincronizado(false);
+    }
+
+    function limparCampos(){
+        setTipo('');
+        setDescricao('');
+    }
+
+    // ----------------------------------
+    // -------- Functions Campos --------
+    // ----------------------------------
+
+    function camposCadastrar(){
+        return (
+            <>
+                <TextEmpresa>Sua Empresa</TextEmpresa>
+                <TextInputComponent
+                    label="Sua Empresa"
+                    placeholder=""
+                    value={empresa}
+                    onChangeText={setUEmpresa} 
+                    placeholderTextColor="#C0C0C0" 
+                    editable={false}
+                />
+
+                <TextTipo>Tipo</TextTipo>
+                <SelectList 
+                    inputStyles={{color: 'gray', fontSize: 16}}
+                    dropdownTextStyles={{color: 'gray'}}
+                    setSelected={(val: any) => setTipo(val)} 
+                    data={dadosTipo} 
+                    save="value"
+                />
+
+                <TextDescricao>Descrição</TextDescricao>
+                <TextInputComponent
+                    label="Descrição"
+                    placeholder="Informe sua descrição"
+                    value={descricao}
+                    onChangeText={setDescricao} 
+                    placeholderTextColor="#C0C0C0" 
+                />
+
+                { camposDataHora() }
+
+                <ButtonComponent
+                    title="Cadastrar Lançamento" 
+                    onPress={ cadastrarLancamentoLocalBanco }
+                    color="#6d4598"
+                    radius="6px" 
+                    paddingVertical="6px"
+                    paddingHorizontal="40px"
+                    marginTop="10px"
+                    marginBottom="20px"
+                    fontSize="14px"
+                    colorText="#fff"
+                />
+            </>
+        )
     }
 
     // --------------------------------
@@ -229,7 +336,7 @@ function Home() {
                     color="#7B68EE"
                     radius="6px" 
                     paddingVertical="6px"
-                    paddingHorizontal="130px"
+                    paddingHorizontal="110px"
                     marginTop="4px"
                     marginBottom="10px"
                     fontSize="14px"
@@ -242,7 +349,7 @@ function Home() {
                     color="#7B68EE"
                     radius="6px" 
                     paddingVertical="6px"
-                    paddingHorizontal="130px"
+                    paddingHorizontal="110px"
                     marginTop="0px"
                     marginBottom="0px"
                     fontSize="14px"
@@ -269,6 +376,120 @@ function Home() {
                 </View>
             </>
         )
+    }
+
+    // ---------------------------------------
+    // -------- Functions Sincronizar --------
+    // ---------------------------------------
+
+    async function sincronizar(){
+
+        setLoading(true);
+
+        var sincronizar = null;
+
+        sincronizar = await sincronizarBackLancamento();
+
+        if(sincronizar){
+            setTimeout(async () => {
+                await sincronizarFrontLancamento();
+            }, 1000);
+        }
+
+        if(!sincronizar){
+            await buscarLancamentoLocal();
+            setLoading(false);
+            return;
+        }
+
+    }
+
+    async function sincronizarBackLancamento(){
+
+        var isConnected = netInfo.isConnected ? true : false;
+
+        if(isConnected){
+
+            const lancamentosLocal = database.get<LancamentoModel>('lancamento');
+            const lan = await lancamentosLocal.query().fetch();
+    
+            lan.forEach(async (l: any) => {
+                var id = l._raw.idbanco == 0 ? null : l._raw.idbanco;
+
+                var lancamentos = {
+                    id: id,
+                    tipo: l._raw.tipo,
+                    data_hora: l._raw.data_hora,
+                    descricao: l._raw.descricao,
+                    sincronizado: true, //l._raw.sincronizado,
+                    firma_id: l._raw.firma_id,
+                    usuario_id: l._raw.usuario_id
+                }
+
+                await cadastrarEditarLancamentoService(lancamentos);
+            });
+            
+            return true;
+
+        }else{
+            await buscarLancamentoLocal();
+            Alert.alert("Local", "Banco local atualizado com sucesso! 1");
+            return false;
+        }
+
+    }
+
+    async function sincronizarFrontLancamento(){
+
+        var isConnected = netInfo.isConnected ? true : false;
+
+        if(isConnected){
+            
+            var l: any = await listarLancamentoService();
+
+            if(l.lancamento){
+
+                await database.write(async () => {
+                    await database.collections.get('lancamento').query().destroyAllPermanently();
+                });
+
+                new Promise((resolve, reject) => {
+                    l.lancamento.forEach(async (l: any) => {
+
+                        await database.write(async () => {
+                            await database.get<LancamentoModel>('lancamento').create(data => {
+                                data.idbanco = l.id,
+                                data.tipo = l.tipo,
+                                data.data_hora = l.data_hora,
+                                data.descricao = l.descricao,
+                                data.sincronizado = true, //l.sincronizado,
+                                data.firma_id = l.firma_id,
+                                data.usuario_id = l.usuario_id
+                            })
+                        });
+                        
+                    });
+                });
+
+                setTimeout(async () => {
+                    await buscarLancamentoLocal();
+                    setLoading(false);
+                    Alert.alert("API e Local", "Banco Local e API atualizado com sucesso!!!")
+                }, 1000);
+                return true;              
+                
+            }else{
+                await buscarLancamentoLocal();
+                Alert.alert("Local", "Banco Local atualizado com sucesso! 2");
+                return false;
+            }
+
+        }else{
+            await buscarLancamentoLocal();
+            Alert.alert("Local", "Banco Local atualizado com sucesso! 3");
+            return false;
+        }
+
     }
     
 }

@@ -12,7 +12,7 @@ import ButtonComponent from "../../components/ButtonComponent";
 
 import { 
     listarFirma as listarFirmaService,
-    cadastrarUsuario as cadastrarUsuarioService
+    cadastrarEditarUsuario as cadastrarEditarUsuarioService
  } from "../../services/ApiService";
 
 import { 
@@ -116,6 +116,8 @@ function CadastrarUsuario() {
 
                                 <TextSelecioneEmpresa>Selecione a Empresa</TextSelecioneEmpresa>
                                 <SelectList 
+                                    inputStyles={{color: 'gray', fontSize: 16}}
+                                    dropdownTextStyles={{color: 'gray'}}
                                     setSelected={(val: any) => setFirmaSelecionada(val)} 
                                     data={firmas} 
                                     save="key"
@@ -176,6 +178,7 @@ function CadastrarUsuario() {
         }
 
         var usuario = {
+            id: null,
             nome: nome,
             login: login,
             senha: senha,
@@ -183,7 +186,7 @@ function CadastrarUsuario() {
             confirma_senha: confirmarSenha,
         }
    
-        var usu = await cadastrarUsuarioService(usuario);
+        var usu = await cadastrarEditarUsuarioService(usuario);
 
         if(!usu){
             Alert.alert("Importante", "Ocorreu um erro ao cadastrar o usuário. Contate o administrador do sistema.");
