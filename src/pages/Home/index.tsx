@@ -215,8 +215,6 @@ function Home() {
     }
 
     async function buscarLancamentoLocal() {
-
-        console.log("caiu aquiiiiiiiiiiiiiiiiiiiii");
         
         const lancamentosLocal = database.get<LancamentoModel>('lancamento');
         const res = await lancamentosLocal.query().fetch();
@@ -228,8 +226,6 @@ function Home() {
                 l._raw.usuario_id == idUsuario ? resposta.push(l) : false;
             });
         });
-
-        console.log(resposta);
 
         setLancamentos(resposta);
     }

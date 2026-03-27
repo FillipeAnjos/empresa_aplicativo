@@ -4,11 +4,11 @@ import { useNavigation } from '@react-navigation/native';
 import { useLogged } from "../../hooks/logged";
 import { useAuth } from "../../hooks/auth";
 import { Loading } from "../../components/Loading";
-
 import { SelectList } from "react-native-dropdown-select-list";
-
 import TextInputComponent from '../../components/TextInputComponent';
 import ButtonComponent from "../../components/ButtonComponent";
+import { database } from "../../databases";
+import { UsuarioModel } from "../../databases/models/usuarioModel";
 
 import { 
     listarFirma as listarFirmaService,
@@ -25,6 +25,7 @@ import {
     TextNaoPossuiEmpresa,
     TextSelecioneEmpresa
 } from './styles';
+
 
 interface listaFirmaI {
   key: number;
@@ -148,7 +149,7 @@ function CadastrarUsuario() {
                                 
                                 <ButtonComponent
                                     title="Cadastrar Usuário" 
-                                    onPress={cadastrarUsuario}
+                                    onPress={cadastrarUsuarioLocalBanco}
                                     color="#6d4598"
                                     radius="6px" 
                                     paddingVertical="4px"
@@ -165,7 +166,7 @@ function CadastrarUsuario() {
         </>
     )
 
-    async function cadastrarUsuario() {
+    async function cadastrarUsuarioLocalBanco() {
 
         if(nome == '' || login == '' || senha == '' || confirmarSenha == '' || firmaSelecionada == 0){
             Alert.alert("Aviso", "Todos os campos devem estar preenchidos.");
@@ -188,6 +189,25 @@ function CadastrarUsuario() {
    
         var usu = await cadastrarEditarUsuarioService(usuario);
 
+        var idbanco = !usu ? 0 : usu.usuario.idCadastrado;
+        
+        new Promise( async() => {
+            await database.write(async () => {
+                await database.get<UsuarioModel>('usuario').create(data => {
+                    data.idbanco = idbanco,
+                    data.nome = nome,
+                    data.login = login,
+                    data.senha = '***', //senha,
+                    data.firma_id = firmaSelecionada
+                })
+            });
+        });
+
+        limparCampos();
+        setLoading(false);
+        Alert.alert("Importante", "Usuário criado com sucesso!");
+
+        /*
         if(!usu){
             Alert.alert("Importante", "Ocorreu um erro ao cadastrar o usuário. Contate o administrador do sistema.");
             limparCampos();
@@ -200,6 +220,7 @@ function CadastrarUsuario() {
             limparCampos();
             setLoading(false);
         }, 990);
+        */
         
     }
 
