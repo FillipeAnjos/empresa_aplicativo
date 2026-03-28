@@ -1,9 +1,5 @@
 import styled from 'styled-components/native';
 
-interface ITextProps {
-  colorText?: string;
-}
-
 export const Container = styled.View`
   flex: 1;
   margin-left: 10px;

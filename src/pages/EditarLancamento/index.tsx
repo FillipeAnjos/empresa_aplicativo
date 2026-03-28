@@ -3,7 +3,7 @@ import { useNavigation, StaticScreenProps } from '@react-navigation/native';
 import { SelectList } from "react-native-dropdown-select-list";
 import TextInputComponent from "../../components/TextInputComponent";
 import { Loading } from "../../components/Loading";
-import { View, Platform, Alert, FlatList, Text, TouchableOpacity } from 'react-native';
+import { View, Platform, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import ButtonComponent from "../../components/ButtonComponent";
 import { useNetInfo } from "@react-native-community/netinfo";
