@@ -5,6 +5,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import Home from '../pages/Home';
 import Sobre from '../pages/Sobre';
+import EditarLancamento from '../pages/EditarLancamento';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -20,7 +21,7 @@ function AppRoutes(): React.JSX.Element {
                 }}
             >
                 <Stack.Screen name="Home" component={Home} />
-                {/*<Stack.Screen name="outraPage" component={outraPage} />*/}
+                <Stack.Screen name="EditarLancamento" component={EditarLancamento} />
             </Stack.Navigator>
         );
     };

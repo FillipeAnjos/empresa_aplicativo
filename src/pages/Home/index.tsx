@@ -9,6 +9,7 @@ import ButtonComponent from "../../components/ButtonComponent";
 import { useNetInfo } from "@react-native-community/netinfo";
 import { database } from '../../databases';
 import { LancamentoModel } from '../../databases/models/lancamentoModel';
+import { useLogged } from "../../hooks/logged";
 
 import { 
     buscarDadosUsuario as buscarDadosUsuarioService,
@@ -31,7 +32,6 @@ import {
     TextLinhaExibirEsconder,
     TouchableOpacityListaLancamentos
 } from './styles';
-import { useLogged } from "../../hooks/logged";
 
 interface NavigationPropsI {
     navigate: (screen: string, params?: any) => void;
@@ -93,7 +93,7 @@ function Home() {
                     loading
                         ?   <Loading />
                         : <>
-                            <TextEmpresaTitulo>Lançamentos</TextEmpresaTitulo>
+                            <TextEmpresaTitulo>Lançamentos</TextEmpresaTitulo> 
 
                             <ButtonComponent
                                 title="Sincronizar" 
@@ -130,7 +130,11 @@ function Home() {
                                 data={lancamentos}
                                 style={{ marginLeft: -10 }}
                                 renderItem={({ item }) => (
-                                    <TouchableOpacityListaLancamentos onPress={ () => console.log("Falta fazer o Editarrrrrr") }>
+                                    <TouchableOpacityListaLancamentos 
+                                        onPress={ 
+                                            () => navigate("EditarLancamento", { idLancamento: item.idbanco, descricao: item.descricao, tipo: item.tipo, idEmpresa: item.firma_id, idUsuario: item.usuario_id, idWatermelon: item.id }) 
+                                        }
+                                    >
                                         <Text style={{ color: '#000' }}>{item.descricao.substring(0, 30)}</Text>
                                         <Text style={{ color: '#000' }}>
                                             {
@@ -246,6 +250,16 @@ function Home() {
         setTipo('');
         setDescricao('');
     }
+
+    //async function removerLancamentoLocalBanco(item: LancamentoModel) {
+    //
+    //    await database.write(async () => {
+    //        await item.destroyPermanently();
+    //    });
+    //
+    //    Alert.alert("Importante", "Lançamento excluso com sucesso!");
+    //
+    //}
 
     // ----------------------------------
     // -------- Functions Campos --------
