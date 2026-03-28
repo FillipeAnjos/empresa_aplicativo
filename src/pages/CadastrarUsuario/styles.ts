@@ -1,6 +1,10 @@
 import styled from 'styled-components/native';
 
-export const Container = styled.ScrollView`
+interface ITextProps {
+  colorText?: string;
+}
+
+export const Container = styled.View`
   flex: 1;
   margin-left: 10px;
   padding-right: 30px;
@@ -51,6 +55,48 @@ export const TextInfirmativoSenhas2 = styled.Text`
   margin-bottom: 0px;
   font-size: 12px;
   margin-bottom: 10px
+`;
+
+export const TextListaUsuario = styled.Text`
+  color: #696969;
+  margin-bottom: 10px;
+  font-size: 16px;
+  text-align: center;
+`;
+
+export const TouchableOpacityListaUsuarios = styled.TouchableOpacity`
+  background-color: #f6d9fa;
+  border-radius: 6px;
+  padding: 10px;
+  margin-bottom: 10px;
+`;
+
+export const TextUsuarioNome = styled.Text`
+  color: #000;
+`;
+
+export const TextUsuarioSync = styled.Text`
+  color: #000;
+`;
+
+export const TextVazio = styled.Text`
+`;
+
+export const TextValorSincronizado = styled.Text<ITextProps>`
+  color: ${props => props.colorText ? props.colorText : '#c71919' };
+`;
+
+export const TextLinhaExibirEsconder = styled.Text`
+  margin-bottom: 20px;
+  border-bottom-width: 1px;
+  border-bottom-color: #ccc;
+`;
+
+export const TextExibirEsconder = styled.Text`
+  font-size: 18px;
+  color: #000;
+  margin-top: 10px;
+  margin-bottom: 10px;
 `;
 
 

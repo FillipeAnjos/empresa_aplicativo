@@ -9,7 +9,7 @@ interface ICadastrarUsuario {
     nome: string;
     login: string;
     senha: string;
-    confirma_senha: string;
+    confirma_senha: string | null;
     firma_id: number;
 }
 
@@ -135,11 +135,28 @@ async function listarLancamento() {
 
 }
 
+async function listarUsuarios() {
+    
+    let url = `/listarUsuarios`;
+
+    try {
+        let res = await Api.get(url);
+        var data = res.data;
+
+        return data;
+    }catch(err) {
+        console.log("Erro no listarUsuarios - ApiService");
+        return false;
+    }
+
+}
+
 export {
     cadastrarEditarFirma,
     listarFirma,
     cadastrarEditarUsuario,
     buscarDadosUsuario,
     cadastrarEditarLancamento,
-    listarLancamento
+    listarLancamento,
+    listarUsuarios
 };

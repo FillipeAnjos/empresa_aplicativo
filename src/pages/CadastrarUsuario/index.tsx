@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions } from "react-native";
+import { Alert, FlatList } from "react-native";
 import { useNavigation } from '@react-navigation/native';
+import { useNetInfo } from "@react-native-community/netinfo";
 import { useLogged } from "../../hooks/logged";
 import { useAuth } from "../../hooks/auth";
 import { Loading } from "../../components/Loading";
@@ -12,7 +13,8 @@ import { UsuarioModel } from "../../databases/models/usuarioModel";
 
 import { 
     listarFirma as listarFirmaService,
-    cadastrarEditarUsuario as cadastrarEditarUsuarioService
+    cadastrarEditarUsuario as cadastrarEditarUsuarioService,
+    listarUsuarios as listarUsuariosService,
  } from "../../services/ApiService";
 
 import { 
@@ -23,7 +25,15 @@ import {
     TextInfirmativoSenhas,
     TextInfirmativoSenhas2,
     TextNaoPossuiEmpresa,
-    TextSelecioneEmpresa
+    TextSelecioneEmpresa,
+    TextListaUsuario,
+    TouchableOpacityListaUsuarios,
+    TextUsuarioNome,
+    TextUsuarioSync,
+    TextVazio,
+    TextValorSincronizado,
+    TextLinhaExibirEsconder,
+    TextExibirEsconder   
 } from './styles';
 
 
@@ -43,6 +53,7 @@ function CadastrarUsuario() {
     const { } = useLogged();
     const { signOut } = useAuth();
 
+    const netInfo = useNetInfo();
     const { navigate } = useNavigation<NavigationPropsI>();
 
     const [nome, setNome] = useState<string>('');
@@ -54,8 +65,12 @@ function CadastrarUsuario() {
 
     const [loading, setLoading] = useState<boolean>(false);
     
+    const [exibirCampos, setExibirCampos] = useState<boolean>(true);
+    const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
+
     useEffect( () => {
         buscarFirmas();
+        buscarUsuariosLocal();
     }, []);
     
     return (
@@ -95,70 +110,122 @@ function CadastrarUsuario() {
                                     colorText="#fff"
                                 />
 
-                                <TextNome>Qual nome?</TextNome>
-                                <TextInputComponent
-                                    label="Qual nome?"
-                                    placeholder="Ex: Fillipe dos Anjos"
-                                    value={nome}
-                                    onChangeText={setNome}
-                                    keyboardType="email-address" 
-                                    placeholderTextColor="#C0C0C0" 
-                                />
-
-                                <TextNome>Qual e-mail? Usado para logar</TextNome>
-                                <TextInputComponent
-                                    label="Qual e-mail?"
-                                    placeholder="Ex: fulano@email.com"
-                                    value={login}
-                                    onChangeText={setLogin}
-                                    keyboardType="email-address" 
-                                    placeholderTextColor="#C0C0C0" 
-                                />
-
-                                <TextSelecioneEmpresa>Selecione a Empresa</TextSelecioneEmpresa>
-                                <SelectList 
-                                    inputStyles={{color: 'gray', fontSize: 16}}
-                                    dropdownTextStyles={{color: 'gray'}}
-                                    setSelected={(val: any) => setFirmaSelecionada(val)} 
-                                    data={firmas} 
-                                    save="key"
-                                />
-
-                                <TextInfirmativoSenhas>Abaixo você verá os campos de senha e confirmar senha.</TextInfirmativoSenhas>
-                                <TextInfirmativoSenhas2>São campos de extrema importância e será necessario usá-los para logar no sistema.</TextInfirmativoSenhas2>
-                                
-                                <TextSenha>Qual a senha?</TextSenha>
-                                <TextInputComponent
-                                    label="Qual a senha?"
-                                    placeholder="Digite sua senha ..."
-                                    value={senha}
-                                    onChangeText={setSenha}
-                                    placeholderTextColor="#C0C0C0" 
-                                    secureTextEntry 
-                                />
-                                
-                                <TextConfirmarSenha>Por favor confirmar a senha</TextConfirmarSenha>
-                                <TextInputComponent
-                                    label="Qual a senha?"
-                                    placeholder="confirme sua senha ..."
-                                    value={confirmarSenha}
-                                    onChangeText={setConfirmarSenha}
-                                    placeholderTextColor="#C0C0C0" 
-                                    secureTextEntry
-                                />
-                                
                                 <ButtonComponent
-                                    title="Cadastrar Usuário" 
-                                    onPress={cadastrarUsuarioLocalBanco}
-                                    color="#6d4598"
+                                    title="Sincronizar" 
+                                    onPress={ () => sincronizar() }  
+                                    color="gray"
                                     radius="6px" 
                                     paddingVertical="4px"
                                     paddingHorizontal="40px"
-                                    marginTop="4px"
-                                    marginBottom="40px"
+                                    marginTop="2px"
+                                    marginBottom="0px"
                                     fontSize="12px"
                                     colorText="#fff"
                                 />
+
+                                {
+                                    exibirCampos
+                                        ? <TextExibirEsconder onPress={ () => exibirEsconderCampos(false) }>Esconder Campos</TextExibirEsconder>
+                                        : <TextExibirEsconder onPress={ () => exibirEsconderCampos(true) }>Exibir Campos</TextExibirEsconder>
+                                }
+                                
+                                <TextLinhaExibirEsconder />
+    
+                                {
+                                    exibirCampos
+                                        ? <>
+                                            <TextNome>Qual nome?</TextNome>
+                                            <TextInputComponent
+                                                label="Qual nome?"
+                                                placeholder="Ex: Fillipe dos Anjos"
+                                                value={nome}
+                                                onChangeText={setNome}
+                                                keyboardType="email-address" 
+                                                placeholderTextColor="#C0C0C0" 
+                                            />
+
+                                            <TextNome>Qual e-mail? Usado para logar</TextNome>
+                                            <TextInputComponent
+                                                label="Qual e-mail?"
+                                                placeholder="Ex: fulano@email.com"
+                                                value={login}
+                                                onChangeText={setLogin}
+                                                keyboardType="email-address" 
+                                                placeholderTextColor="#C0C0C0" 
+                                            />
+
+                                            <TextSelecioneEmpresa>Selecione a Empresa</TextSelecioneEmpresa>
+                                            <SelectList 
+                                                inputStyles={{color: 'gray', fontSize: 16}}
+                                                dropdownTextStyles={{color: 'gray'}}
+                                                setSelected={(val: any) => setFirmaSelecionada(val)} 
+                                                data={firmas} 
+                                                save="key"
+                                            />
+
+                                            <TextInfirmativoSenhas>Abaixo você verá os campos de senha e confirmar senha.</TextInfirmativoSenhas>
+                                            <TextInfirmativoSenhas2>São campos de extrema importância e será necessario usá-los para logar no sistema.</TextInfirmativoSenhas2>
+                                            
+                                            <TextSenha>Qual a senha?</TextSenha>
+                                            <TextInputComponent
+                                                label="Qual a senha?"
+                                                placeholder="Digite sua senha ..."
+                                                value={senha}
+                                                onChangeText={setSenha}
+                                                placeholderTextColor="#C0C0C0" 
+                                                secureTextEntry 
+                                            />
+                                            
+                                            <TextConfirmarSenha>Por favor confirmar a senha</TextConfirmarSenha>
+                                            <TextInputComponent
+                                                label="Qual a senha?"
+                                                placeholder="confirme sua senha ..."
+                                                value={confirmarSenha}
+                                                onChangeText={setConfirmarSenha}
+                                                placeholderTextColor="#C0C0C0" 
+                                                secureTextEntry
+                                            />
+                                            
+                                            <ButtonComponent
+                                                title="Cadastrar Usuário" 
+                                                onPress={cadastrarUsuarioLocalBanco}
+                                                color="#6d4598"
+                                                radius="6px" 
+                                                paddingVertical="4px"
+                                                paddingHorizontal="40px"
+                                                marginTop="4px"
+                                                marginBottom="40px"
+                                                fontSize="12px"
+                                                colorText="#fff"
+                                            />
+                                        </>
+                                    : null
+                                }
+
+                                <TextListaUsuario>Listas dos Usuários Cadastrados</TextListaUsuario>
+                                                            
+                                <FlatList
+                                    data={usuarios}
+                                    style={{ marginBottom: 60 }}
+                                    renderItem={({ item }) => (
+                                        <TouchableOpacityListaUsuarios 
+                                            onPress={ 
+                                                () => console.log("Editar Usuario")
+                                            }
+                                        >
+                                            <TextUsuarioNome>{item.nome}</TextUsuarioNome>
+                                            <TextUsuarioSync>
+                                                {
+                                                    item.idbanco == 0 
+                                                        ? <TextVazio>Sync: <TextValorSincronizado colorText={'#c71919'} >Não</TextValorSincronizado></TextVazio>
+                                                        : <TextVazio>Sync: <TextValorSincronizado colorText={'#3CB371'} >Sim</TextValorSincronizado></TextVazio>
+                                                }
+                                            </TextUsuarioSync>
+                                        </TouchableOpacityListaUsuarios>
+                                    )}
+                                    keyExtractor={item => item.id}
+                                />
+
                             </>
                 }
 
@@ -190,6 +257,7 @@ function CadastrarUsuario() {
         var usu = await cadastrarEditarUsuarioService(usuario);
 
         var idbanco = !usu ? 0 : usu.usuario.idCadastrado;
+        var senhaHashOuOriginal = !usu ? senha : usu.usuario.senhaCadastrada;
         
         new Promise( async() => {
             await database.write(async () => {
@@ -197,13 +265,14 @@ function CadastrarUsuario() {
                     data.idbanco = idbanco,
                     data.nome = nome,
                     data.login = login,
-                    data.senha = '***', //senha,
+                    data.senha = senhaHashOuOriginal,
                     data.firma_id = firmaSelecionada
                 })
             });
         });
 
         limparCampos();
+        await buscarUsuariosLocal();
         setLoading(false);
         Alert.alert("Importante", "Usuário criado com sucesso!");
 
@@ -259,7 +328,146 @@ function CadastrarUsuario() {
         setFirmaSelecionada(0);
     }
 
+    function exibirEsconderCampos(condicao: boolean){
+        setLoading(true);
+        setExibirCampos(condicao);
+        setTimeout(async () => {
+            setLoading(false);
+        }, 800);
+    }
+
+    //async function limparCampos() {
+    //    setFirma('');
+    //}
+
+    async function buscarUsuariosLocal() {
+            
+        const usuarioLocal = database.get<UsuarioModel>('usuario');
+        const res = await usuarioLocal.query().fetch();
+
+        var resposta: UsuarioModel[] = [];
     
+        new Promise(() => {
+            res.forEach(async (l: any) => {
+                resposta.push(l)
+            });
+        });
+
+        setUsuarios(resposta);
+    }
+
+    // ---------------------------------------
+    // -------- Functions Sincronizar --------
+    // ---------------------------------------
+
+    async function sincronizar(){
+
+        setLoading(true);
+
+        var sincronizar = null;
+
+        sincronizar = await sincronizarBackUsuario();
+
+        if(sincronizar){
+            setTimeout(async () => {
+                await sincronizarFrontUsuario();
+            }, 1000);
+        }
+
+        if(!sincronizar){
+            await buscarUsuariosLocal();
+            setLoading(false);
+            return;
+        }
+
+    }
+
+    async function sincronizarBackUsuario(){
+
+        var isConnected = netInfo.isConnected ? true : false;
+
+        if(isConnected){
+
+            const usuarioLocal = database.get<UsuarioModel>('usuario');
+            const user = await usuarioLocal.query().fetch();
+    
+            user.forEach(async (u: any) => {
+                var id = u._raw.idbanco == 0 ? null : u._raw.idbanco;
+
+                var usuario = {
+                    id: id, 
+                    nome: u._raw.nome, 
+                    login: u._raw.login, 
+                    senha: u._raw.senha, 
+                    confirma_senha: null, 
+                    firma_id: u._raw.firma_id
+                }
+
+                await cadastrarEditarUsuarioService(usuario);
+            });
+            
+            return true;
+
+        }else{
+            await buscarUsuariosLocal();
+            Alert.alert("Local", "Banco local atualizado com sucesso! 1");
+            return false;
+        }
+
+    }
+
+    async function sincronizarFrontUsuario(){
+
+        var isConnected = netInfo.isConnected ? true : false;
+
+        if(isConnected){
+            
+            var u = await listarUsuariosService();
+
+            if(u.usuario){
+
+                await database.write(async () => {
+                    await database.collections.get('usuario').query().destroyAllPermanently();
+                });
+
+                new Promise((resolve, reject) => {
+                    u.usuario.forEach(async (u: any) => {
+
+                        await database.write(async () => {
+                            await database.get<UsuarioModel>('usuario').create(data => {
+                                data.idbanco = u.id,
+                                data.nome = u.nome,
+                                data.login = u.login,
+                                data.senha = u.senha,
+                                data.firma_id = u.firma_id
+                            })
+                        });
+                        
+                    });
+                });
+
+                setTimeout(async () => {
+                    await buscarUsuariosLocal();
+                    setLoading(false);
+                    Alert.alert("API e Local", "Banco Local e API atualizado com sucesso!!!")
+                }, 1000);
+                return true;              
+                
+            }else{
+                await buscarUsuariosLocal();
+                Alert.alert("Local", "Banco Local atualizado com sucesso! 2");
+                return false;
+            }
+
+        }else{
+            await buscarUsuariosLocal();
+            Alert.alert("Local", "Banco Local atualizado com sucesso! 3");
+            return false;
+        }
+
+    }
+
+
 }
 
 export default CadastrarUsuario;
