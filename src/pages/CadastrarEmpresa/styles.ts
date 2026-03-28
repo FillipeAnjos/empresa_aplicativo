@@ -1,5 +1,9 @@
 import styled from 'styled-components/native';
 
+interface ITextProps {
+  colorText?: string;
+}
+
 export const Container = styled.View`
   flex: 1;
   margin-left: 10px;
@@ -30,6 +34,18 @@ export const TouchableOpacityListaEmpresas = styled.TouchableOpacity`
 export const TextEmpresaNome = styled.Text`
   color: #000;
 `;
+
+export const TextEmpresaSync = styled.Text`
+  color: #000;
+`;
+
+export const TextVazio = styled.Text`
+`;
+
+export const TextValorSincronizado = styled.Text<ITextProps>`
+  color: ${props => props.colorText ? props.colorText : '#c71919' };
+`;
+
 
 
 

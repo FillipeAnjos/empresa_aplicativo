@@ -18,7 +18,10 @@ import {
     TextFirma,
     TextListaEmpresa,
     TouchableOpacityListaEmpresas,
-    TextEmpresaNome
+    TextEmpresaNome,
+    TextEmpresaSync,
+    TextVazio,
+    TextValorSincronizado
 } from './styles';
 
 interface NavigationPropsI {
@@ -108,6 +111,13 @@ function CadastrarEmpresa() {
                                         }
                                     >
                                         <TextEmpresaNome>{item.nome}</TextEmpresaNome>
+                                        <TextEmpresaSync>
+                                            {
+                                                item.idbanco == 0 
+                                                    ? <TextVazio>Sync: <TextValorSincronizado colorText={'#c71919'} >Não</TextValorSincronizado></TextVazio>
+                                                    : <TextVazio>Sync: <TextValorSincronizado colorText={'#3CB371'} >Sim</TextValorSincronizado></TextVazio>
+                                            }
+                                        </TextEmpresaSync>
                                     </TouchableOpacityListaEmpresas>
                                 )}
                                 keyExtractor={item => item.id}
