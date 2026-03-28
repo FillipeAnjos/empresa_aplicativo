@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, FlatList } from "react-native";
+import { Alert, FlatList, Text } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import TextInputComponent from '../../components/TextInputComponent';
 import ButtonComponent from "../../components/ButtonComponent";
@@ -17,8 +17,8 @@ import {
     Container, 
     TextFirma,
     TextListaEmpresa,
-    ViewListaEmpresas,
-    TextListaEmpresas
+    TouchableOpacityListaEmpresas,
+    TextEmpresaNome
 } from './styles';
 
 interface NavigationPropsI {
@@ -36,7 +36,7 @@ function CadastrarEmpresa() {
     const [firmas, setFirmas] = useState<FirmaModel[]>([]);
 
     useEffect(() => {
-        buscarFirmaLocal(); 
+        buscarFirmasLocal(); 
     }, [firmas]);
         
     return (
@@ -102,9 +102,13 @@ function CadastrarEmpresa() {
                                 data={firmas}
                                 style={{ marginBottom: 60 }}
                                 renderItem={({ item }) => (
-                                    <ViewListaEmpresas>
-                                        <TextListaEmpresas>{item.idbanco + ' - ' + item.nome}</TextListaEmpresas>
-                                    </ViewListaEmpresas>
+                                    <TouchableOpacityListaEmpresas 
+                                        onPress={ 
+                                            () => console.log("Editar Empresa")
+                                        }
+                                    >
+                                        <TextEmpresaNome>{item.nome}</TextEmpresaNome>
+                                    </TouchableOpacityListaEmpresas>
                                 )}
                                 keyExtractor={item => item.id}
                             />
@@ -131,19 +135,35 @@ function CadastrarEmpresa() {
             })
         });
 
+        limparCampos();
         setLoading(false);
         Alert.alert("Importante", "Empresa criada com sucesso!");
 
     }
 
-    async function buscarFirmaLocal() {
-    
-        const firmasLocal = database.get<FirmaModel>('firma');
-        const res = await firmasLocal.query().fetch();
-
-        setFirmas(res);
-
+    async function limparCampos() {
+        setFirma('');
     }
+
+    async function buscarFirmasLocal() {
+            
+        const firmaLocal = database.get<FirmaModel>('firma');
+        const res = await firmaLocal.query().fetch();
+
+        var resposta: FirmaModel[] = [];
+    
+        new Promise(() => {
+            res.forEach(async (l: any) => {
+                resposta.push(l)
+            });
+        });
+
+        setFirmas(resposta);
+    }
+
+    // ---------------------------------------
+    // -------- Functions Sincronizar --------
+    // ---------------------------------------
 
     async function sincronizar(){
 
@@ -152,17 +172,19 @@ function CadastrarEmpresa() {
         var sincronizar = null;
 
         sincronizar = await sincronizarBackFirma();
-        sincronizar = sincronizar ? await sincronizarFrontFirma() : null;
+
+        if(sincronizar){
+            setTimeout(async () => {
+                await sincronizarFrontFirma();
+            }, 1000);
+        }
 
         if(!sincronizar){
+            await buscarFirmasLocal();
             setLoading(false);
             return;
         }
 
-        setTimeout(() => {
-            setLoading(false);
-            Alert.alert("API e Local", "Banco Local e API atualizado com sucesso!!!")
-        }, 1000);
     }
 
     async function sincronizarBackFirma(){
@@ -171,8 +193,8 @@ function CadastrarEmpresa() {
 
         if(isConnected){
 
-            const firmasLocal = database.get<FirmaModel>('firma');
-            const fir = await firmasLocal.query().fetch();
+            const firmaLocal = database.get<FirmaModel>('firma');
+            const fir = await firmaLocal.query().fetch();
     
             fir.forEach(async (f: any) => {
                 var id = f._raw.idbanco == 0 ? null : f._raw.idbanco;
@@ -182,7 +204,7 @@ function CadastrarEmpresa() {
             return true;
 
         }else{
-            buscarFirmaLocal();
+            await buscarFirmasLocal();
             Alert.alert("Local", "Banco local atualizado com sucesso! 1");
             return false;
         }
@@ -196,41 +218,47 @@ function CadastrarEmpresa() {
         if(isConnected){
             
             var f = await listarFirmaService();
-    
+
             if(f.firma){
 
                 await database.write(async () => {
                     await database.collections.get('firma').query().destroyAllPermanently();
                 });
 
-                f.firma.forEach(async (f: any) => {
+                new Promise((resolve, reject) => {
+                    f.firma.forEach(async (f: any) => {
 
-                    await database.write(async () => {
-                        await database.get<FirmaModel>('firma').create(data => {
-                            data.idbanco = f.id,
-                            data.nome = f.nome
-                        })
+                        await database.write(async () => {
+                            await database.get<FirmaModel>('firma').create(data => {
+                                data.idbanco = f.id,
+                                data.nome = f.nome
+                            })
+                        });
+                        
                     });
-                    
                 });
 
-                buscarFirmaLocal();
+                setTimeout(async () => {
+                    await buscarFirmasLocal();
+                    setLoading(false);
+                    Alert.alert("API e Local", "Banco Local e API atualizado com sucesso!!!")
+                }, 1000);
                 return true;              
                 
             }else{
-                buscarFirmaLocal();
+                await buscarFirmasLocal();
                 Alert.alert("Local", "Banco Local atualizado com sucesso! 2");
                 return false;
             }
 
         }else{
-            buscarFirmaLocal();
+            await buscarFirmasLocal();
             Alert.alert("Local", "Banco Local atualizado com sucesso! 3");
             return false;
         }
 
     }
-
+    
 }
 
 export default CadastrarEmpresa;

@@ -20,16 +20,15 @@ export const TextListaEmpresa = styled.Text`
   text-align: center;
 `;
 
-export const ViewListaEmpresas = styled.View`
-  background-color: #eda9f5;
+export const TouchableOpacityListaEmpresas = styled.TouchableOpacity`
+  background-color: #f6d9fa;
   border-radius: 6px;
   padding: 10px;
   margin-bottom: 10px;
 `;
 
-export const TextListaEmpresas = styled.Text`
-  font-size: 18px;
-  color: #4d4848;
+export const TextEmpresaNome = styled.Text`
+  color: #000;
 `;
 
 
