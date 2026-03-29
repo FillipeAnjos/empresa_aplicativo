@@ -12,7 +12,6 @@ import { database } from "../../databases";
 import { UsuarioModel } from "../../databases/models/usuarioModel";
 
 import { 
-    listarFirma as listarFirmaService,
     cadastrarEditarUsuario as cadastrarEditarUsuarioService,
     listarUsuarios as listarUsuariosService,
  } from "../../services/ApiService";
@@ -35,6 +34,7 @@ import {
     TextLinhaExibirEsconder,
     TextExibirEsconder   
 } from './styles';
+import { FirmaModel } from "../../databases/models/firmaModel";
 
 
 interface listaFirmaI {
@@ -69,7 +69,7 @@ function CadastrarUsuario() {
     const [usuarios, setUsuarios] = useState<UsuarioModel[]>([]);
 
     useEffect( () => {
-        buscarFirmas();
+        buscarFirmasLocal();
         buscarUsuariosLocal();
     }, []);
     
@@ -293,13 +293,14 @@ function CadastrarUsuario() {
         
     }
 
-    async function buscarFirmas() {
+    async function buscarFirmasLocal() {
 
         setLoading(true);
 
-        var lista = await listarFirmaService();
+        const firmaLocal = database.get<FirmaModel>('firma');
+        const res = await firmaLocal.query().fetch();
 
-        lista = lista == false ? null : lista;
+        var lista = res == null || !res ? null : res;
 
         if(lista == null){
             setFirmas(null)
@@ -309,7 +310,7 @@ function CadastrarUsuario() {
 
         var lis: listaFirmaI[] = [];
 
-        lista.firma.forEach((l: any) => {
+        lista.forEach((l: any) => {
             lis.push({ key: l.id, value: l.nome, disabled: false });
         });
 
@@ -335,10 +336,6 @@ function CadastrarUsuario() {
             setLoading(false);
         }, 800);
     }
-
-    //async function limparCampos() {
-    //    setFirma('');
-    //}
 
     async function buscarUsuariosLocal() {
             
