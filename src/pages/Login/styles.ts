@@ -4,7 +4,7 @@ export const ViewContainer = styled.View`
   position: absolute;
   padding-right: 60px;
   padding-left: 60px;
-  padding-top: 186px;
+  padding-top: 240px;
   padding-bottom: 186px;
   align-self: center;
   top: 12%;
@@ -40,6 +40,8 @@ export const TextSecundary = styled.Text`
 
 export const TextEmpty = styled.Text`
   color: gray;
+  font-size: 16px;
+  margin-bottom: 4px;
 `;
 
 

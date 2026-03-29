@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Dimensions, View, Image, Alert, ImageBackground, Keyboard, Linking, Text, TouchableOpacity } from "react-native";
+import { Dimensions, View, Image, Alert, ImageBackground, Keyboard, Linking, Text, TouchableOpacity  } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { useAuth } from "../../hooks/auth";
 import NetInfo from '@react-native-community/netinfo';
@@ -87,6 +87,11 @@ function Login() {
     function renderizarLogar(){
         return <>
             <TextInitial>Projeto Empresa</TextInitial>
+
+            <Image 
+                source={require('../../assets/imagem-login.png')} 
+                style={{ width: 230, height: 158, alignSelf: "center", marginTop: 50 }} 
+            />
     
             <ViewContainer>
 
@@ -162,11 +167,16 @@ function Login() {
 
             <TextSecundary>O que deseja cadastrar?</TextSecundary>
 
+            <Image 
+                source={require('../../assets/imagem-cadastro.png')} 
+                style={{ width: 230, height: 159, alignSelf: "center", marginTop: 40 }} 
+            />
+
             <ViewContainer>
                 <ViewContainerSon>
                     <TextEmpty onPress={ () => navigate("CadastrarEmpresa") }>Cadatrar Empresa</TextEmpty>
                     <TextEmpty /> 
-                    <TextEmpty onPress={ () => navigate("CadastrarUsuario") }>Cadatrar Usuario</TextEmpty>
+                    <TextEmpty onPress={ () => navigate("CadastrarUsuario") }>Cadatrar Usuário</TextEmpty>
                 </ViewContainerSon>
             </ViewContainer>
 
