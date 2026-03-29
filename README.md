@@ -1,97 +1,57 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+## About Empresa - FRONT-END
 
-# Getting Started
+Bem-vindo ao Empresas, aplicativo desenhado para functionar Offline First, fácil e inteligente. <br>
+Com a interface intuitiva, você pode criar, editar, visualizar e muito mais, tudo online ou offline. <br>
+OBS: O projeto Empresas foi criado como forma de apresentação.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+## Tecnologias 
 
-## Step 1: Start Metro
+React Native / TypeScript / JavaScript / Watermelondb / Android
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+## Instalação
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+1° Clonar o projeto <br>
+2° cd empresa_aplicativo <br>
+3° npm install <br>
+4° npm run dev ou yarn dev <br>
+5° OBS: Esse projeto contém apenas o Front-End do sistema <br>
+   o Back-end se encontra em outro repositório <br>
+   para rodar esse projeto necessariamente precisará do Back-end.<br>
 
-```sh
-# Using npm
-npm start
+## Principais Bibliotecas
 
-# OR using Yarn
-yarn start
-```
+Watermelondb <br>
+Typescript <br>
+Javascript <br>
+Axios <br>
+React <br>
+React Native <br>
+Dotenv <br>
+Styled Components
 
-## Step 2: Build and run your app
+### Arquivos importantes
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
+tsconfig.json - Raiz do projeto <br>
+.env - Raiz do projeto <br>
+babel.config.js - Raiz do projeto <br>
+package.json - Raiz do projeto <br>
+index.js - Raiz do projeto <br>
+enviromment.js - Raiz do projeto <br>
 
-### Android
+## Passos para bildar o projeto - FRONT-END
 
-```sh
-# Using npm
-npm run android
+1° - Rode o Back-End <br>
 
-# OR using Yarn
-yarn android
-```
+2° - Rode o comando "npm run dev" ou "npm run android" <br>
 
-### iOS
+## Como testar o Offline First
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+1° - Na tela inicial do app cadastre as empresas e usuarios. <br>
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
+2° - Logue com um dos usuários criados. <br>
 
-```sh
-bundle install
-```
+3° - Crie Lançamentos online ou offline - Sincronize com o banco API, <br>
+Crie Empresas online ou offline - Sincronize com o banco API, <br>
+Crie Usuários online ou offline - Sincronize com o banco API <br>
 
-Then, and every time you update your native dependencies, run:
 
-```sh
-bundle exec pod install
-```
-
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
-
-```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
-```
-
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
-
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
-
-## Step 3: Modify your app
-
-Now that you have successfully run the app, let's make changes!
-
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
-
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
-
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
-
-## Congratulations! :tada:
-
-You've successfully run and modified your React Native App. :partying_face:
-
-### Now what?
-
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
-
-# Troubleshooting
-
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
-
-# Learn More
-
-To learn more about React Native, take a look at the following resources:
-
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
